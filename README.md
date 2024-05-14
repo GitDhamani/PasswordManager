@@ -11,3 +11,5 @@ You can use the program to store as many passwords as you like, putting them in 
 Whenever you need to retrieve a password, you either find it by navigating through the tree structure, or just the find password menu option. You can then click the URL/Username/Password buttons to have those individual pieces of information copied to the clipboard respectively.
 
 You can also change the OTP token seed if you have your own hardware token that you prefer to use.
+
+![Thumb](https://github.com/GitDhamani/PasswordManager/assets/111576658/13cb55d7-8378-40aa-8d94-71bfafd27525)
