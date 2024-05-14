@@ -1,0 +1,25 @@
+1 VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "CompanyName", "Password Manager"
+            VALUE "FileDescription", "Password Manager"
+            VALUE "FileVersion", "1,0,0,0"
+            VALUE "InternalName", "Password Manager"
+            VALUE "LegalCopyright", "Copyright © M Dhamani"
+            VALUE "OriginalFilename", "Password Manager.exe"
+            VALUE "ProductName", "Password Manager"
+            VALUE "ProductVersion", "1,0,0,0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 1252
+    END
+END
+
+IDI_ICON1 ICON DISCARDABLE "./RC/AppIcon.ico"
