@@ -3,6 +3,8 @@
 #include <string>
 
 //Headers
+#include <Windows.h>
+#include <Lmcons.h>
 #include <QDebug>
 #include <QScrollBar>
 #include <QTimer>

@@ -192,6 +192,19 @@ std::string verifyLogin()
     return recoveredDBPW;
 }
 
+bool CheckWinPass(const std::string& Username, const std::string& PW) {
+    std::wstring wUsername(Username.begin(), Username.end());
+    std::wstring wPW(PW.begin(), PW.end());
+
+    HANDLE token;
+    if (LogonUserW(wUsername.c_str(), L".", wPW.c_str(), LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT, &token)) {
+        CloseHandle(token);
+        return true; // Password is correct.
+    } else {
+        return false; // Password is incorrect or could not log in.
+    }
+}
+
 void loginPageConnect()
 {
     //The login button
@@ -255,6 +268,25 @@ void loginPageConnect()
         QMessageBox::StandardButton reply;
         reply = QMessageBox::question(nullptr, "Confirm", "A Reset will wipe the Database and\nrequires an application restart.\nAre you sure?", QMessageBox::Yes|QMessageBox::No);
         if (reply == QMessageBox::No) return;
+
+        //Make sure User knows Windows Logon PW
+
+        //Get Current User Username
+        char username[UNLEN + 1];
+        DWORD username_len = UNLEN + 1;
+        if (!GetUserNameA(username, &username_len))
+        {
+            qDebug() << "Failed to retrieve username. Error code: " << GetLastError();
+            exit(1);
+        }
+
+        //Request Windows Password from user
+        bool okpressed;
+        QString pw = QInputDialog::getText(NULL, "Enter Password", "Please Enter your Windows Password: ", QLineEdit::Password, "", &okpressed);
+        if (!okpressed) return;
+
+        //Check Credentials
+        if (!CheckWinPass(username, pw.toStdString())) return; //Password Failed
 
         //Wipe Registry
         RegDeleteValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "PWHash");
