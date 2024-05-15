@@ -22,6 +22,8 @@
 #include <QChar>
 #include <QDateTime>
 #include <string>
+#include <QDesktopServices>
+#include <QUrl>
 
 
 //Prototypes

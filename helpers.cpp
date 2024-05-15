@@ -323,6 +323,12 @@ void mainPageConnect()
 
             thisptr->clipboard = QGuiApplication::clipboard();
             thisptr->clipboard->setText(thisptr->URL);
+
+            // URL to open
+            QUrl url(thisptr->URL);
+
+            // Open the URL in the default web browser
+            QDesktopServices::openUrl(url);
         });
 
         //Username Button
