@@ -37,6 +37,7 @@ set(PROJECT_SOURCES
         AES256/AES256.cpp SHA1/SHA1.cpp
         newseeddialog.h newseeddialog.cpp newseeddialog.ui
         childlineedit.h childlineedit.cpp
+        hoverbutton.h hoverbutton.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

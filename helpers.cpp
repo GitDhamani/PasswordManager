@@ -13,6 +13,7 @@ extern dbType storage;
 
 void initialiseGUI()
 {
+    uiptr->stackedWidget->setCurrentIndex(0);
     uiptr->errorLabel->setVisible(false);
 }
 
@@ -320,14 +321,8 @@ void mainPageConnect()
             QString str = QString("Clicked: %1 %2 %3").arg(item->text(0)).arg(parentText).arg(grandParentText);
             if (parentText.contains("No Parent") || grandParentText.contains("No Grandparent")) return;
 
-            uiptr->urlButton->setText("Copied");
             thisptr->clipboard = QGuiApplication::clipboard();
             thisptr->clipboard->setText(thisptr->URL);
-
-            QTimer::singleShot(500, NULL, [](){
-                uiptr->urlButton->setText("URL");
-            });
-
         });
 
         //Username Button
@@ -340,14 +335,8 @@ void mainPageConnect()
             QString str = QString("Clicked: %1 %2 %3").arg(item->text(0)).arg(parentText).arg(grandParentText);
             if (parentText.contains("No Parent") || grandParentText.contains("No Grandparent")) return;
 
-            uiptr->usernameButton->setText("Copied");
             QClipboard *clipboard = QGuiApplication::clipboard();
             clipboard->setText(thisptr->Username);
-
-            QTimer::singleShot(500, NULL, [](){
-                uiptr->usernameButton->setText("Username");
-            });
-
         });
 
         //Password Button
@@ -360,14 +349,8 @@ void mainPageConnect()
             QString str = QString("Clicked: %1 %2 %3").arg(item->text(0)).arg(parentText).arg(grandParentText);
             if (parentText.contains("No Parent") || grandParentText.contains("No Grandparent")) return;
 
-            uiptr->pwButton->setText("Copied");
             QClipboard *clipboard = QGuiApplication::clipboard();
             clipboard->setText(thisptr->Password);
-
-            QTimer::singleShot(500, NULL, [](){
-                uiptr->pwButton->setText("Password");
-            });
-
         });
 
 }
