@@ -28,7 +28,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Enter Base 32 Seed:</string>
+    <string>New Base 32 Seed:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="seedEdit">
@@ -64,7 +64,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Enter OTP Code:</string>
+    <string>New OTP Code:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="otpEdit">

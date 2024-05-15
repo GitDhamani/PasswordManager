@@ -43,7 +43,7 @@
     </font>
    </property>
    <property name="text">
-    <string>Tag Name:</string>
+    <string>Name:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="urlEdit">
@@ -117,7 +117,7 @@
     <rect>
      <x>120</x>
      <y>113</y>
-     <width>231</width>
+     <width>191</width>
      <height>20</height>
     </rect>
    </property>
@@ -184,14 +184,27 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>235</x>
-     <y>310</y>
+     <x>240</x>
+     <y>312</y>
      <width>111</width>
      <height>23</height>
     </rect>
    </property>
    <property name="text">
     <string>Update</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="genButton">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>111</y>
+     <width>31</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>G</string>
    </property>
   </widget>
  </widget>

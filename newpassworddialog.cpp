@@ -3,8 +3,10 @@
 #include "dbsetup.h"
 #include <QMessageBox>
 #include <set>
+#include <QClipboard>
 
 extern dbType storage;
+extern QString generateRandomPassword();
 
 NewPasswordDialog::NewPasswordDialog(QWidget *parent) :
     QDialog(parent),
@@ -59,6 +61,16 @@ NewPasswordDialog::NewPasswordDialog(QWidget *parent) :
 
         success = 1;
         this->close();
+    });
+
+
+    //Generate Random Password "G" Button
+    connect(ui->genButton, &QPushButton::clicked, [this](){
+        QString randomPW = generateRandomPassword();
+        ui->passwordEdit->setText(randomPW);
+
+        // Save password to clipboard
+        QApplication::clipboard()->setText(randomPW);
     });
 
 }

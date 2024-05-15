@@ -73,7 +73,7 @@ border-radius: 10px;</string>
          <string> Password</string>
         </property>
        </widget>
-       <widget class="QLineEdit" name="otpEdit">
+       <widget class="ChildLineEdit" name="otpEdit">
         <property name="geometry">
          <rect>
           <x>129</x>
@@ -339,6 +339,13 @@ border-radius: 5px;</string>
    </layout>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ChildLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>childlineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="Resources.qrc"/>
  </resources>

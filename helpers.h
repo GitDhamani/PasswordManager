@@ -1,6 +1,5 @@
 #ifndef HELPERS_H
 #define HELPERS_H
-#include <string>
 
 //Headers
 #include <Windows.h>
@@ -19,6 +18,10 @@
 #include <QTreeWidget>
 #include "QR/QrToPng.h"
 #include <QFile>
+#include <QString>
+#include <QChar>
+#include <QDateTime>
+#include <string>
 
 
 //Prototypes

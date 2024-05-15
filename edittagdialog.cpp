@@ -3,9 +3,12 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "dbsetup.h"
+#include <QClipboard>
+
 extern MainWindow* thisptr;
 extern Ui::MainWindow* uiptr;
 extern dbType storage;
+extern QString generateRandomPassword();
 
 EditTagDialog::EditTagDialog(QWidget *parent) :
     QDialog(parent),
@@ -30,6 +33,15 @@ EditTagDialog::EditTagDialog(QWidget *parent) :
         Notes = ui->notesEdit->toPlainText();
         success = 1;
         this->close();
+    });
+
+    //Generate Random Password "G" Button
+    connect(ui->genButton, &QPushButton::clicked, [this](){
+        QString randomPW = generateRandomPassword();
+        ui->passwordEdit->setText(randomPW);
+
+        // Save password to clipboard
+        QApplication::clipboard()->setText(randomPW);
     });
 }
 

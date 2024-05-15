@@ -125,7 +125,10 @@ void failedLogin()
     uiptr->errorLabel->setVisible(true);
     uiptr->pwEdit->clear();
     uiptr->otpEdit->clear();
-    QTimer::singleShot(1000, NULL, [](){ uiptr->errorLabel->setVisible(false); });
+    uiptr->pwEdit->setFocus();
+    QTimer::singleShot(1000, NULL, [](){
+        uiptr->errorLabel->setVisible(false);
+    });
 }
 
 bool checkOTP(int N, std::string B32Seed, QString otpCode)
@@ -205,61 +208,65 @@ bool CheckWinPass(const std::string& Username, const std::string& PW) {
     }
 }
 
+void doLogin()
+{
+    //Are Fields Empty? If so return
+    if (uiptr->pwEdit->text().isEmpty() || uiptr->otpEdit->text().isEmpty())
+    { failedLogin(); return; }
+
+    //Check if a brand new installation or not
+    bool newInstallCheck = isNewInstall();
+
+    if (newInstallCheck == 1) //New Install
+    {
+        //Is the OTP Code Correct, 2 Window Tolerance;
+        if(checkOTP(2, thisptr->B32QRSeed, uiptr->otpEdit->text()) == false)
+        { failedLogin(); return; }
+
+        //Encrypt Seed with AES256 and install into Registry Key Seed
+        //Use the MachineGuid as the Encryption Key
+        std::string keyval = getKeyVal();
+        std::string encryptedSeed = encryptString(thisptr->B32QRSeed, keyval);
+        RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "Seed", encryptedSeed);
+
+        //Take in PW, hash using SHA1 and install into Registry Key PWHash
+        std::string SHA1PW = sha1(uiptr->pwEdit->text().toStdString());
+        RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "PWHash", SHA1PW);
+
+        //Delete Database
+        QFile DBFile {"Passwords.db"};
+        DBFile.remove();
+
+        //Generate Random Database Password
+        std::string randomPW = GenRandomPW();
+        //theDBPW = randomPW;
+
+        //Create DBPW = [RandomPW + PWHash], and Encrypt with AES256 using MachineGuid as key.
+        randomPW += SHA1PW;
+        std::string DBPW = encryptString(randomPW, keyval);
+        RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "DBPW", DBPW);
+    }
+
+    std::string theDBPW = verifyLogin();
+    if (theDBPW == "failed") return;
+
+    //Using Database PW to encrypt database, if it fails, Program will quit.
+    SetupTable(theDBPW);
+
+    //Prepare Tree Format
+    initialiseTree();
+
+    //Load Tree with Database
+    updateTree();
+
+    uiptr->stackedWidget->setCurrentIndex(1);
+}
+
 void loginPageConnect()
 {
     //The login button
     thisptr->connect(uiptr->loginButton, &QPushButton::clicked, [](){
-
-        //Are Fields Empty? If so return
-        if (uiptr->pwEdit->text().isEmpty() || uiptr->otpEdit->text().isEmpty())
-        { failedLogin(); return; }
-
-        //Check if a brand new installation or not
-        bool newInstallCheck = isNewInstall();
-
-        if (newInstallCheck == 1) //New Install
-        {
-            //Is the OTP Code Correct, 2 Window Tolerance;
-            if(checkOTP(2, thisptr->B32QRSeed, uiptr->otpEdit->text()) == false)
-            { failedLogin(); return; }
-
-            //Encrypt Seed with AES256 and install into Registry Key Seed
-            //Use the MachineGuid as the Encryption Key
-            std::string keyval = getKeyVal();
-            std::string encryptedSeed = encryptString(thisptr->B32QRSeed, keyval);
-            RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "Seed", encryptedSeed);
-
-            //Take in PW, hash using SHA1 and install into Registry Key PWHash
-            std::string SHA1PW = sha1(uiptr->pwEdit->text().toStdString());
-            RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "PWHash", SHA1PW);
-
-            //Delete Database
-            QFile DBFile {"Passwords.db"};
-            DBFile.remove();
-
-            //Generate Random Database Password
-            std::string randomPW = GenRandomPW();
-            //theDBPW = randomPW;
-
-            //Create DBPW = [RandomPW + PWHash], and Encrypt with AES256 using MachineGuid as key.
-            randomPW += SHA1PW;
-            std::string DBPW = encryptString(randomPW, keyval);
-            RegAddKey("HKEY_LOCAL_MACHINE\\SOFTWARE\\PasswordMgr", "DBPW", DBPW);
-        }
-
-        std::string theDBPW = verifyLogin();
-        if (theDBPW == "failed") return;
-
-        //Using Database PW to encrypt database, if it fails, Program will quit.
-        SetupTable(theDBPW);
-
-        //Prepare Tree Format
-        initialiseTree();
-
-        //Load Tree with Database
-        updateTree();
-
-        uiptr->stackedWidget->setCurrentIndex(1);
+        doLogin();
     });
 
     //The Reset Button
@@ -454,3 +461,33 @@ void GenRandomQRSeed()
     QFile file("Seed.png");
     file.remove();
 }
+
+QString generateRandomPassword() {
+    const QString uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const QString lowercase = "abcdefghijklmnopqrstuvwxyz";
+    const QString specialChars = "!@#$%^&*()_+-=[]{}|.<>?";
+
+    QString password;
+
+    // Seed the random number generator
+    qsrand(static_cast<uint>(QDateTime::currentMSecsSinceEpoch()));
+
+    for (int i = 0; i < 20; ++i) {
+        int choice = QRandomGenerator::global()->bounded(3); // Randomly choose uppercase, lowercase, or special character
+
+        switch (choice) {
+            case 0:
+                password.append(uppercase.at(QRandomGenerator::global()->bounded(uppercase.size())));
+                break;
+            case 1:
+                password.append(lowercase.at(QRandomGenerator::global()->bounded(lowercase.size())));
+                break;
+            case 2:
+                password.append(specialChars.at(QRandomGenerator::global()->bounded(specialChars.size())));
+                break;
+        }
+    }
+
+    return password;
+}
+
